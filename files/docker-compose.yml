@@ -1,0 +1,21 @@
+version: '2'
+services:
+  mobsf:
+    restart: always
+    image: 127.0.0.1:5000/mobsf:latest
+    ports:
+      - 8090:8000
+
+  nginx_mobsf:
+    restart: always
+    image: 127.0.0.1:5000/rp4mobsf:latest
+    ports:
+      - 8000:443
+    environment:
+      DH_SIZE: 512
+      FORWARD_HOST: server
+      FORWARD_PORT: 8090
+    volumes:
+      - /data/rp4mobsf/conf/conf.d/:/etc/nginx/conf.d
+      - /data/rp4mobsf/conf/pki/:/etc/nginx/pki
+      - /data/rp4mobsf/conf/auth/:/etc/nginx/auth

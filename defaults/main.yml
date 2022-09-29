@@ -1,0 +1,22 @@
+---
+rp4mobsf_version: "latest"
+mobsf_version: "latest"
+
+docker_reqpackages:
+- docker-ce-20.10.8-3.el7
+- docker-compose-2.1.0-4.el7
+
+owner: "root"
+group: "root"
+
+rp4mobsf_data_volume: "/data/rp4mobsf/"
+
+rp4mobsf_docker_name: "rp4mobsf-nginx_mobsf-1"
+rp4mobsf_images: "server:5000/rp4mobsf"
+
+mobsf_docker_name: "rp4mobsf-mobsf-1"
+mobsf_images: "server:5000/mobsf"
+
+
+custom_users:
+  - { name: "test", pass: "$apr1$TcqYAC.J$/DOJw093bltGom/VBOmJd/" }

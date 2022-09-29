@@ -1,0 +1,53 @@
+---
+#- name: "Install docker packages"
+#  dnf:
+#    name: "{{ docker_reqpackages }}"
+#    state: installed
+
+- name: "Start and enable docker"
+  systemd:
+    name: docker
+    state: started
+    enabled: true
+
+- name: "Create data volume"
+  file:
+    path: "{{ rp4mobsf_data_volume }}"
+    state: directory
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0775
+
+- name: "Сopying conf files"
+  copy:
+    src: "conf"
+    dest: "{{ rp4mobsf_data_volume }}"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0775
+  notify: "Restart mobsf service"
+
+- name: "Templating htpasswd.j2"
+  template:
+    src: htpasswd.j2
+    dest: "{{ rp4mobsf_data_volume }}/conf/auth/auth.htpasswd"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0775
+  tags: "Update users"
+  notify: "Reload nginx"
+
+- name: "Сopy compose files"
+  copy:
+    src: "docker-compose.yml"
+    dest: "{{ rp4mobsf_data_volume }}"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0775
+  notify: "Restart mobsf service"
+
+- name: "Run docker-compose up"
+  become: true
+  shell:
+    chdir: "{{ rp4mobsf_data_volume }}"
+    cmd: "docker-compose up -d"

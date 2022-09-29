@@ -1,0 +1,11 @@
+---
+- name: "Restart mobsf service"
+  become: true
+  shell:
+    chdir: "{{ rp4mobsf_data_volume }}"
+    cmd: "docker-compose down && docker-compose up -d"
+
+- name: "Reload nginx"
+  become: true
+  shell:
+    cmd: "docker exec -t {{ rp4mobsf_docker_name }} /etc/init.d/nginx force-reload"
