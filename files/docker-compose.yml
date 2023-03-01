@@ -1,21 +1,25 @@
-version: '2'
+ersion: '3.8'
 services:
   mobsf:
+    image: opensecurity/mobile-security-framework-mobsf
     restart: always
-    image: 127.0.0.1:5000/mobsf:latest
+    environment:
+     - http_proxy=
+     - https_proxy=
+     - MOBSF_API_KEY=360be513eb4af9bd652cf14cda6f30be909c40db4de448a7e3cd3b5f1d6a65ee
     ports:
-      - 8090:8000
-
+     - 8000:8000
   nginx_mobsf:
     restart: always
-    image: 127.0.0.1:5000/rp4mobsf:latest
+    image: rp4mobsf
     ports:
-      - 8000:443
+      - 80:80
+      - 443:443
     environment:
       DH_SIZE: 512
-      FORWARD_HOST: server
-      FORWARD_PORT: 8090
+      FORWARD_HOST:
+      FORWARD_PORT: 8000
     volumes:
-      - /data/rp4mobsf/conf/conf.d/:/etc/nginx/conf.d
-      - /data/rp4mobsf/conf/pki/:/etc/nginx/pki
-      - /data/rp4mobsf/conf/auth/:/etc/nginx/auth
+      - /opt/MobSF/RP4MobSF/conf/conf.d/:/etc/nginx/conf.d
+      - /opt/MobSF/RP4MobSF/conf/pki/:/etc/nginx/pki
+      - /opt/MobSF/RP4MobSF/conf/auth/:/etc/nginx/auth
